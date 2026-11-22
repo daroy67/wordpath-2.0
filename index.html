@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WordPath — Interactive English Learning Platform</title>
+    <meta name="description" content="Build your English, one focused session at a time. Interactive B1–B2 vocabulary, grammar, contextual reading, AI mentor, writing & speaking studio, placement check, and progress tracking." />
+    <meta property="og:title" content="WordPath — Interactive English Learning Platform" />
+    <meta property="og:description" content="Build your English, one focused session at a time. Interactive B1–B2 English learning platform with AI Mentor." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+    <script>
+      try {
+        var raw = localStorage.getItem('wordpath_state_v2') || localStorage.getItem('wordpath_state_v1');
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (parsed && parsed.theme === 'dark') {
+            document.documentElement.classList.add('dark');
+          }
+        }
+      } catch (e) {}
+    </script>
+  </head>
+  <body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 antialiased selection:bg-indigo-100 selection:text-indigo-900 dark:selection:bg-indigo-900 dark:selection:text-indigo-100">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

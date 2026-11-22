@@ -1,0 +1,1120 @@
+# MASTER PROMPT: WORDPATH 2.0 — COMPLETE WEBSITE REDESIGN, DEVELOPMENT & OPTIMIZATION
+
+## YOUR ROLE
+
+You are a senior full-stack developer, UI/UX designer, software architect, AI engineer, educational technology specialist, and QA engineer.
+
+Your task is to take my existing project, **WordPath — Interactive English Learning Platform**, and transform it into a polished, production-quality English learning platform.
+
+I do NOT want a simple redesign, a landing page, or a prototype. I want you to thoroughly inspect my existing source code, fix actual problems, improve the architecture, implement new features, redesign the entire interface, and test the final application.
+
+You have access to my existing project files. Work directly with the existing codebase.
+
+**Your objective is to create WordPath 2.0: a beautiful, intelligent, interactive, personalized English learning platform for B1–B2 learners.**
+
+Do not ask me to manually implement individual changes. Make the changes yourself.
+
+Do not stop after preparing a plan. Inspect, develop, integrate, test, and finalize the actual application.
+
+---
+
+# PART 1. UNDERSTAND AND AUDIT THE EXISTING PROJECT
+
+Before changing anything, carefully inspect the entire project.
+
+The existing application is built around:
+
+- React 19
+- TypeScript
+- Vite
+- Tailwind CSS
+- Lucide React
+- LocalStorage
+- Web Speech API
+
+The existing project includes these sections:
+
+1. Dashboard
+2. Vocabulary
+3. Grammar
+4. Reading
+5. Placement Test
+6. Progress Analytics
+7. IB Project Hub
+
+The source code has previously included components and files such as:
+
+- `App.tsx`
+- `Layout.tsx`
+- `DashboardView.tsx`
+- `VocabularyView.tsx`
+- `GrammarView.tsx`
+- `ReadingView.tsx`
+- `PlacementTestView.tsx`
+- `ProgressView.tsx`
+- `IBProjectHubView.tsx`
+- `useWordPathState.ts`
+- Vocabulary, grammar, reading and placement data files
+- Type definitions
+- Project documentation
+
+The actual repository may have changed, so inspect the current file structure instead of assuming that every file is identical.
+
+### Mandatory technical audit
+
+Inspect:
+
+- Every page and component.
+- Every hook.
+- Application state management.
+- LocalStorage implementation.
+- Navigation and routing.
+- Data structures.
+- Learning algorithms.
+- Form validation.
+- Responsive behavior.
+- Dependencies.
+- API integrations.
+- Build configuration.
+- Accessibility.
+- Error handling.
+
+Identify all genuine bugs, duplicate logic, unused dependencies, inconsistent data, broken interactions, and architectural weaknesses.
+
+Create a short internal implementation checklist and then start fixing the problems.
+
+Do not remove working functionality merely because replacing it is easier.
+
+Preserve the existing useful content and improve it.
+
+## Previously identified problems that must be checked and corrected
+
+These problems were identified during the previous project analysis. Verify each against the current source code before modifying it.
+
+### 1. Daily learning goal inconsistency
+
+The application previously allowed users to select 10, 15, or 20 minutes, while the learning plan continued using the same fixed durations.
+
+Correct the behavior.
+
+Use a centralized configuration:
+
+- 10 minutes: 3 + 4 + 3.
+- 15 minutes: 5 + 6 + 4.
+- 20 minutes: 7 + 8 + 5.
+
+The displayed goal, task durations, completion percentage, and progress calculations must all use the same configuration.
+
+Changing the goal must immediately update the actual learning plan.
+
+### 2. Dangerous progress reset behavior
+
+The previous `resetAllProgress()` implementation called `createInitialState()` and could erase IB Project Hub information together with learning progress.
+
+Fix this properly.
+
+Create separate actions:
+
+**Reset Learning Progress**
+- Reset learning statistics.
+- Reset completed lessons.
+- Reset vocabulary learning states.
+- Reset learning streaks and relevant study activity.
+- Preserve personal settings.
+- Preserve IB notes, reflections, and evidence checklists.
+
+**Full Application Reset**
+- A separate destructive operation.
+- Requires an explicit confirmation dialog.
+- Clearly explains which information will be deleted.
+
+Never silently delete a student's saved project documentation.
+
+### 3. Reading word count consistency
+
+Previously, the Reading section contained a passage of approximately 276 words, while some documentation displayed a different number.
+
+Calculate the word count from the actual passage automatically or maintain one authoritative value.
+
+Ensure every displayed word count matches the real content.
+
+### 4. Placement Test accuracy
+
+A short test containing only eight questions cannot reliably establish a user's official CEFR level.
+
+Improve the diagnostic test.
+
+Prefer a larger assessment containing approximately 20–30 carefully designed questions, covering different language skills.
+
+Provide:
+- A score.
+- Topic-level performance.
+- Recommended learning direction.
+- Suggested next lessons.
+
+Do not claim that the application officially certifies a user's CEFR level.
+
+If the assessment is incomplete, clearly describe its result as an indicative recommendation rather than a verified B1/B2 classification.
+
+### 5. LocalStorage reliability
+
+Implement robust persistence.
+
+Requirements:
+- Validate loaded data.
+- Handle corrupted JSON.
+- Handle missing properties.
+- Support schema versions.
+- Migrate older saved data safely.
+- Prevent undefined values from breaking the application.
+- Preserve user information across refreshes.
+- Recover gracefully when storage is unavailable.
+
+Add tests for the important persistence operations.
+
+### 6. Dependencies
+
+Inspect `package.json`.
+
+Remove dependencies only when you confirm that they are unnecessary.
+
+Do not add large libraries without a real reason.
+
+Keep the application lightweight and maintainable.
+
+---
+
+# PART 2. COMPLETE UI/UX REDESIGN
+
+This is one of the most important parts of the project.
+
+I want a genuinely attractive, modern, colorful, premium-looking interface.
+
+**Do not leave the application with a plain white background.**
+
+The current design should evolve into something that feels like a modern educational technology product.
+
+Look at the quality of modern SaaS dashboards, premium productivity applications, and modern language-learning products for inspiration.
+
+Do not copy another company's interface.
+
+## Desired visual identity
+
+Create an original visual system for WordPath.
+
+### Color palette
+
+Use a colorful but sophisticated palette.
+
+Suggested direction:
+
+- Primary: Indigo / deep violet.
+- Secondary: Electric blue.
+- Accent: Turquoise.
+- Additional accent: Soft coral or pink.
+- Background: Very light lavender-blue gradient.
+- Cards: Soft white, translucent, or lightly tinted surfaces.
+- Text: Deep navy or dark slate.
+
+Suggested background:
+
+A subtle gradient combining lavender, pale blue, and a small amount of turquoise.
+
+The background must look interesting without making text difficult to read.
+
+Avoid:
+- Pure white everywhere.
+- Excessive neon colors.
+- Extremely saturated backgrounds.
+- Too many unrelated colors.
+- Heavy shadows.
+- Excessive glassmorphism.
+- Generic AI-generated dashboard aesthetics.
+
+Use gradients selectively.
+
+### Visual details
+
+Implement:
+
+- Smooth rounded cards.
+- Consistent border radius.
+- Elegant shadows.
+- Subtle borders.
+- Beautiful typography.
+- Consistent spacing.
+- Clear visual hierarchy.
+- Custom icons.
+- Smooth hover effects.
+- Micro-interactions.
+- Animated progress indicators.
+- Attractive charts.
+- Carefully designed empty states.
+- Consistent buttons and inputs.
+
+Use subtle animations, not distracting effects.
+
+Support reduced-motion preferences.
+
+### Typography
+
+Choose a modern, readable font combination.
+
+The interface should feel premium, clear, and friendly.
+
+Keep headings distinctive and body text easy to read.
+
+### Navigation
+
+Redesign the entire navigation system.
+
+Desktop:
+- Elegant sidebar.
+- Clearly selected navigation item.
+- Small icons.
+- User profile and settings.
+- Quick access to AI Mentor.
+
+Mobile:
+- Properly optimized navigation.
+- No horizontal overflow.
+- Accessible navigation controls.
+- Responsive cards and charts.
+
+### Dashboard redesign
+
+The dashboard must become the central learning experience.
+
+It should contain:
+
+1. Personalized welcome message.
+2. Current learning streak.
+3. Daily goal.
+4. Today's learning plan.
+5. Weekly progress.
+6. Recommended next activity.
+7. Areas that need improvement.
+8. Quick access to AI Mentor.
+9. Motivational but non-intrusive messages.
+
+Use visually attractive cards and charts.
+
+The dashboard must display REAL application data, not fabricated statistics.
+
+If the user has no learning history, show a useful onboarding state instead of invented achievements.
+
+### Light and dark themes
+
+Implement a proper theme system.
+
+At minimum:
+- Colorful light theme.
+- Elegant dark theme.
+
+Remember the selected theme after refreshing.
+
+Ensure adequate contrast in both themes.
+
+---
+
+# PART 3. BUILD A FULLY FUNCTIONAL AI MENTOR
+
+This is one of the biggest priorities.
+
+I want an actual AI-powered English tutor, not a decorative chatbot that returns scripted responses.
+
+Name it:
+
+**WordPath AI Mentor**
+
+Give it a friendly, recognizable robot identity.
+
+Create a small original robot mascot that fits the application's design system. It should look modern, friendly, and intelligent, not childish.
+
+The AI Mentor should feel like a real part of WordPath.
+
+## 3.1 AI Mentor interface
+
+Create a dedicated page accessible through the sidebar and dashboard.
+
+It should contain:
+
+- A polished chat interface.
+- Conversation history.
+- Clear user and assistant message bubbles.
+- Typing indicator.
+- Animated robot status.
+- Message timestamps.
+- New conversation button.
+- Clear conversation option.
+- Suggested questions.
+- Copy response button.
+- Retry response button.
+- Proper loading states.
+- Error messages.
+- Auto-scrolling when appropriate.
+
+The interface must be comfortable to use on desktop and mobile.
+
+## 3.2 AI Mentor capabilities
+
+The AI must support several learning modes.
+
+### Mode A: English Conversation
+
+Users can practice English conversations with the AI.
+
+The AI should:
+- Maintain a natural conversation.
+- Adapt to B1 or B2 difficulty.
+- Use realistic situations.
+- Ask follow-up questions.
+- Encourage the learner to produce complete answers.
+- Avoid unnecessarily complicated vocabulary.
+- Correct important mistakes naturally.
+
+Possible topics:
+- Travel.
+- Education.
+- Technology.
+- Science.
+- Business.
+- Everyday life.
+- Environment.
+- Culture.
+- Future careers.
+
+### Mode B: Grammar Tutor
+
+The AI explains grammar.
+
+For example, a user asks:
+
+"Can you explain the difference between Present Perfect and Past Simple?"
+
+The AI should provide:
+1. Simple explanation.
+2. When to use each structure.
+3. Examples.
+4. Comparison.
+5. Common mistakes.
+6. A short practice exercise.
+
+If the user answers incorrectly, explain why.
+
+### Mode C: Vocabulary Assistant
+
+The AI should help users understand new words.
+
+For each word, it can provide:
+- Definition.
+- B1/B2 difficulty.
+- Example sentence.
+- Synonyms.
+- Common collocations.
+- Word forms.
+- A short practice question.
+
+### Mode D: Writing Coach
+
+The user submits a paragraph or essay.
+
+The AI provides:
+- Grammar feedback.
+- Vocabulary feedback.
+- Sentence structure feedback.
+- Clarity improvements.
+- Suggested corrections.
+- Explanation of important mistakes.
+
+Show the original and corrected sentences.
+
+Do not rewrite the entire text without explaining the changes.
+
+Preserve the student's original meaning and voice.
+
+### Mode E: Quiz Generator
+
+Allow users to request exercises.
+
+Examples:
+
+- Give me 5 B2 vocabulary questions.
+- Test my knowledge of conditionals.
+- Create a Present Perfect exercise.
+- Give me a short reading comprehension quiz.
+
+The AI should generate questions, validate answers, explain mistakes, and provide a final summary.
+
+## 3.3 AI personality and teaching rules
+
+The AI must behave as a professional, friendly English teacher.
+
+System behavior:
+
+- Adapt to the selected B1/B2 level.
+- Use clear language.
+- Avoid unnecessarily long explanations.
+- Explain errors constructively.
+- Give examples.
+- Encourage active learning.
+- Avoid simply giving answers when guiding the learner would be more educational.
+- Remember the current conversation context.
+- Correct significant English errors when appropriate.
+- Distinguish between grammar errors and stylistic suggestions.
+
+Provide a setting to choose explanation language:
+
+- English.
+- Russian.
+
+English should remain the main language of the learning experience.
+
+## 3.4 REAL AI BACKEND
+
+This requirement is essential.
+
+Do not implement a fake AI chatbot.
+
+Inspect the current deployment environment. The website has previously been deployed on Netlify, so prefer Netlify Functions if they fit the existing project.
+
+Use a secure server-side architecture.
+
+Example:
+
+React frontend → Serverless API function → AI provider → Validated response → React frontend.
+
+Requirements:
+
+- Never expose API keys in frontend code.
+- Never place secrets in `VITE_` environment variables.
+- Use server-side environment variables.
+- Create a provider abstraction so the AI model can be changed without rewriting the chat interface.
+- Validate user input.
+- Add request timeouts.
+- Handle API failures.
+- Handle invalid responses.
+- Add reasonable request limits.
+- Limit input length and response size.
+- Prevent accidental repeated requests.
+- Display useful error messages.
+
+Provide an `.env.example` file with placeholder variable names, never real secrets.
+
+Do not invent API keys or pretend an API is connected when it is not.
+
+If credentials are unavailable, complete the frontend and backend integration, provide a clearly labeled demo mode, and document the exact environment variables needed to activate real AI functionality.
+
+Do not present demo responses as actual AI-generated responses.
+
+## 3.5 Privacy and safety
+
+Do not send personal IB reflections, private project notes, or unrelated saved information to the AI provider.
+
+Only send the information required for the current learning request.
+
+Avoid storing unnecessary conversation data.
+
+Do not expose API credentials.
+
+Implement reasonable educational content safeguards and explain when an answer is outside the tutor's scope.
+
+---
+
+# PART 4. PERSONALIZED LEARNING PATH
+
+Implement an actual adaptive learning system.
+
+The application should not recommend identical content to every learner.
+
+Use available learning data to identify areas that need attention.
+
+For example:
+
+- Weak grammar performance → recommend related grammar exercises.
+- Frequently missed vocabulary → recommend vocabulary revision.
+- Strong reading results → recommend more challenging texts.
+- Low quiz scores → recommend a review session.
+
+### Learning path interface
+
+Create a beautiful learning progress map.
+
+Show:
+- Strong areas.
+- Areas to improve.
+- Recommended lessons.
+- Completed lessons.
+- Upcoming lessons.
+- Current learning goals.
+
+Use clear progress indicators.
+
+Recommendations must be based on actual available results.
+
+If there is insufficient data, show a beginner recommendation and explain that more practice is needed.
+
+Do not pretend that a small number of questions provides scientific certainty about the learner's abilities.
+
+### Spaced repetition
+
+Improve the existing vocabulary learning system.
+
+Use a transparent spaced-repetition heuristic.
+
+Suggested initial intervals:
+
+- Again: repeat immediately or in the current session.
+- Hard: approximately 10 minutes.
+- Got it: 1 day.
+- Subsequent successful reviews: 3, 7, and 14 days.
+
+Store:
+- Last review date.
+- Next review date.
+- Review count.
+- Difficulty.
+- Correct and incorrect answers.
+- Current learning status.
+
+Allow users to review words that are due.
+
+Make the algorithm easy to maintain and modify.
+
+Describe it as a simplified learning heuristic, not a scientifically validated prediction model.
+
+---
+
+# PART 5. EXPAND THE ENGLISH LEARNING CONTENT
+
+The original content should be preserved and expanded.
+
+Do not add randomly generated filler.
+
+Every lesson must be educationally useful and checked for correctness.
+
+## 5.1 Vocabulary
+
+Expand the vocabulary library from the original 28 words toward approximately 100–150 well-selected B1–B2 words.
+
+Organize words by topics:
+
+- Education.
+- Technology.
+- Business.
+- Environment.
+- Society.
+- Science.
+- Travel.
+- Communication.
+- Psychology.
+- Work and careers.
+
+Each vocabulary entry should include:
+
+- Word.
+- Part of speech.
+- Definition.
+- Example sentence.
+- Difficulty.
+- Pronunciation where available.
+- Optional synonyms.
+- Collocations.
+
+Add search, filtering, topic selection, and revision modes.
+
+## 5.2 Grammar
+
+Expand the current four grammar topics to approximately 10–12 high-quality modules.
+
+Include:
+
+1. Present Perfect vs Past Simple.
+2. First and Second Conditionals.
+3. Articles.
+4. Gerunds and Infinitives.
+5. Passive Voice.
+6. Reported Speech.
+7. Relative Clauses.
+8. Modal Verbs.
+9. Past Perfect.
+10. Future Forms.
+11. Comparatives and Superlatives.
+12. Advanced sentence structures.
+
+Each lesson needs:
+
+- Clear explanation.
+- Structure.
+- Usage.
+- Examples.
+- Common mistakes.
+- Practice questions.
+- Immediate feedback.
+- Explanation of correct answers.
+
+Do not simply add large paragraphs of theory.
+
+Use interactive examples, comparison cards, and small exercises.
+
+## 5.3 Reading
+
+Expand the reading library to approximately 8–10 original passages.
+
+Include:
+- Different topics.
+- Different difficulties.
+- Useful vocabulary.
+- Comprehension questions.
+- Multiple-choice questions.
+- True/false questions where appropriate.
+- Explanation of answers.
+
+Make the reading interface comfortable and distraction-free.
+
+## 5.4 Placement Test
+
+Improve the diagnostic assessment.
+
+Use approximately 20–30 questions across appropriate difficulty levels.
+
+Include different question types.
+
+Provide a final report with:
+- Total score.
+- Performance by topic.
+- Recommended next step.
+- Relevant lessons.
+
+Clearly explain that the result is an unofficial learning recommendation, not an official CEFR certificate.
+
+---
+
+# PART 6. WRITING & SPEAKING STUDIO
+
+This should become another major part of the platform.
+
+## 6.1 Writing Studio
+
+Create a dedicated writing workspace.
+
+Users should be able to:
+
+- Choose a topic.
+- Select B1 or B2.
+- Write a paragraph or essay.
+- Receive grammar feedback.
+- Receive vocabulary feedback.
+- Get suggestions for clarity.
+- View corrected sentences.
+- Save drafts locally.
+- Track improvements over time.
+
+Include useful task types:
+
+- Opinion paragraph.
+- Email.
+- Short essay.
+- Argumentative writing.
+- Description.
+- Summary.
+
+Use AI when available.
+
+When the AI service is unavailable, clearly explain that feedback cannot currently be generated. Do not pretend to have completed an AI review.
+
+## 6.2 Speaking Studio
+
+Create an interactive speaking practice area.
+
+Use browser-supported speech APIs where available.
+
+Features:
+
+- Microphone permission handling.
+- Speech recognition.
+- Display recognized text.
+- Speaking topics.
+- Conversation prompts.
+- Speaking practice timer.
+- Optional playback of supported text-to-speech.
+- AI feedback on the recognized transcript.
+
+Important:
+
+Do not claim to measure pronunciation accuracy, accent quality, or fluency precisely if the implementation only performs speech-to-text.
+
+Provide a graceful fallback when speech recognition is not supported by the browser.
+
+---
+
+# PART 7. PROGRESS ANALYTICS
+
+Transform the current Progress section into a useful analytics dashboard.
+
+Show real data:
+
+- Total study time.
+- Weekly activity.
+- Learning streak.
+- Vocabulary mastered.
+- Vocabulary due for revision.
+- Grammar accuracy.
+- Reading performance.
+- Completed exercises.
+- Learning goal completion.
+
+Use attractive charts.
+
+Include:
+- Weekly activity chart.
+- Skill performance chart.
+- Progress over time.
+- Vocabulary mastery distribution.
+
+Do not fabricate historical records.
+
+Handle empty states properly.
+
+All metrics must be calculated consistently from saved data.
+
+---
+
+# PART 8. IB PROJECT HUB
+
+Preserve the existing IB Project Hub.
+
+It is important to my personal project documentation.
+
+Improve its organization and usability without deleting any existing information.
+
+Keep:
+- Criterion A planning.
+- Criterion B applying skills.
+- Criterion C reflecting.
+- Personal notes.
+- Reflections.
+- Evidence checklist.
+- Project-related documentation.
+
+Protect saved information when performing application updates or resets.
+
+Do not fabricate:
+- Personal reflections.
+- Testing sessions.
+- Feedback.
+- Meetings.
+- Evidence.
+- Completed project activities.
+
+Make it clear which activities are planned, completed, or still pending.
+
+Personal project information must not automatically be sent to the AI Mentor.
+
+---
+
+# PART 9. ONBOARDING AND USER EXPERIENCE
+
+Create a professional onboarding experience.
+
+On the first launch:
+
+1. Welcome the user.
+2. Explain what WordPath offers.
+3. Allow the user to select a learning goal.
+4. Allow the user to choose B1 or B2 as a practice preference.
+5. Allow selection of explanation language.
+6. Introduce the initial diagnostic assessment.
+7. Generate the first learning recommendation.
+
+Do not force users to complete an excessively long registration process.
+
+Avoid requiring an account unless the existing architecture genuinely needs one.
+
+If authentication is not implemented, clearly explain that saved information is stored locally on the current device and browser.
+
+Include a settings page:
+
+- Daily learning goal.
+- Practice level.
+- Explanation language.
+- Theme.
+- Notification preferences, if notifications are actually implemented.
+- Data management.
+- Reset options.
+
+Make onboarding skippable where reasonable.
+
+---
+
+# PART 10. RESPONSIVENESS, ACCESSIBILITY AND PERFORMANCE
+
+The entire application must work properly on:
+
+- 360px mobile screens.
+- 390px mobile screens.
+- 768px tablet screens.
+- 1024px laptop screens.
+- 1366px desktop screens.
+- Large desktop screens.
+
+Requirements:
+
+- No horizontal overflow.
+- No broken navigation.
+- No clipped text.
+- Responsive charts.
+- Usable mobile cards.
+- Properly sized buttons.
+- Touch-friendly interactions.
+- Accessible labels.
+- Keyboard navigation.
+- Visible focus states.
+- Appropriate contrast.
+- Reduced-motion support.
+
+Follow WCAG accessibility principles, aiming for WCAG 2.2 AA where practical. Do not claim formal certification without an actual audit.
+
+Optimize:
+
+- Component rendering.
+- Unnecessary state updates.
+- Bundle size.
+- Image loading.
+- Asset usage.
+- Long lists.
+- API calls.
+
+Use lazy loading for larger sections when appropriate.
+
+Do not sacrifice functionality or accessibility for animations.
+
+---
+
+# PART 11. CODE QUALITY AND ARCHITECTURE
+
+Keep the project understandable and maintainable.
+
+Requirements:
+
+- Strong TypeScript typing.
+- Reusable components.
+- Centralized design tokens.
+- Centralized application state logic.
+- Separation of UI and business logic.
+- Clear data models.
+- Error boundaries where useful.
+- Consistent naming.
+- No unnecessary duplicated code.
+- No unexplained hacks.
+- No fake functionality.
+- No unused imports.
+- No avoidable dependencies.
+
+Avoid creating one enormous component containing the entire application.
+
+Separate features into logical folders.
+
+Preserve the existing architecture when it is already appropriate.
+
+Do not rewrite everything just to make the folder structure look different.
+
+---
+
+# PART 12. TESTING AND QUALITY ASSURANCE
+
+This part is mandatory.
+
+Do not finish merely because the website looks good.
+
+Test the actual application.
+
+## Required checks
+
+Run the relevant commands available in the repository:
+
+- Dependency installation.
+- Lint.
+- TypeScript type checking.
+- Production build.
+- Automated tests.
+- Browser tests where available.
+
+Create or update automated tests for important business logic.
+
+Test the following user journeys:
+
+### Journey 1: New user
+
+- Open the website.
+- Complete onboarding.
+- Choose a daily goal.
+- Complete the diagnostic assessment.
+- Receive a recommendation.
+- Open the Dashboard.
+
+### Journey 2: Vocabulary
+
+- Open Vocabulary.
+- Search for a word.
+- Review a card.
+- Mark it as Again, Hard, or Got it.
+- Refresh the page.
+- Confirm that progress remains saved.
+
+### Journey 3: Grammar
+
+- Open a grammar lesson.
+- Complete exercises.
+- Submit answers.
+- Check immediate feedback.
+- Verify progress analytics.
+
+### Journey 4: Reading
+
+- Open a reading passage.
+- Read it.
+- Complete questions.
+- Check score and explanation.
+- Verify that displayed word counts are accurate.
+
+### Journey 5: AI Mentor
+
+- Open the AI Mentor.
+- Send a real message.
+- Receive an actual AI response when the API is configured.
+- Test conversation context.
+- Test error handling.
+- Test retry behavior.
+- Test missing credentials.
+- Test loading states.
+
+### Journey 6: Writing and Speaking
+
+- Submit a writing sample.
+- Test AI feedback when available.
+- Test microphone permissions.
+- Test unsupported browser fallback.
+
+### Journey 7: Persistence
+
+- Change theme.
+- Change learning goal.
+- Complete activities.
+- Refresh the page.
+- Confirm that all expected data remains.
+
+### Journey 8: Reset
+
+- Reset learning progress.
+- Confirm that IB documentation remains.
+- Test the separate full reset with confirmation.
+
+### Journey 9: Responsive design
+
+Test all major pages on mobile, tablet, and desktop.
+
+Fix all significant issues found.
+
+Do not claim that a test passed unless you actually ran it.
+
+---
+
+# PART 13. FINAL DELIVERABLES
+
+When development is completed, provide:
+
+1. Fully updated source code.
+2. Working production build.
+3. Updated package configuration.
+4. Secure AI backend integration.
+5. `.env.example`.
+6. Clear setup instructions in README.
+7. AI provider configuration documentation.
+8. Explanation of deployment requirements.
+9. Automated tests.
+10. `FINAL_QA_REPORT.md`.
+11. Updated IB project documentation where necessary.
+12. A final ZIP containing the complete project.
+
+The README must explain:
+
+- How to install dependencies.
+- How to run the development server.
+- How to build the application.
+- How to run tests.
+- How to configure the AI API.
+- How to deploy on Netlify.
+- Which environment variables are required.
+- Which features work without external API credentials.
+
+The QA report must distinguish between:
+- Successfully tested features.
+- Features that require external credentials.
+- Features that were not tested.
+- Known remaining limitations.
+
+---
+
+# PART 14. DEVELOPMENT RULES
+
+Follow these rules throughout the work.
+
+1. Work directly on the existing project.
+2. Inspect before modifying.
+3. Preserve existing useful functionality.
+4. Fix confirmed bugs rather than hiding them.
+5. Build real interactive features.
+6. Do not create buttons that do nothing.
+7. Do not use fake data to make analytics look impressive.
+8. Do not claim AI integration works without a real backend connection.
+9. Never expose secrets in frontend code.
+10. Keep the interface visually consistent.
+11. Make the application responsive.
+12. Test the result.
+13. Do not leave unfinished placeholder components.
+14. Do not replace existing content with empty examples.
+15. Do not stop after generating a development plan.
+16. If a feature cannot be completed because credentials or external services are missing, implement everything possible and document the exact blocker.
+17. Make reasonable technical decisions independently instead of repeatedly asking me for approval.
+18. Prioritize a stable, complete application over unnecessary complexity.
+
+If the task is too large for one uninterrupted implementation, work in logical phases, but continue until the deliverables are complete. Do not mark incomplete work as finished.
+
+---
+
+# FINAL PRODUCT VISION
+
+The final product should feel like a real premium educational technology platform.
+
+The ideal WordPath experience:
+
+- A beautiful colorful interface.
+- Smooth and intuitive navigation.
+- A personalized learning dashboard.
+- High-quality B1–B2 learning content.
+- An intelligent AI English Mentor.
+- Interactive grammar and vocabulary exercises.
+- A personalized learning path.
+- Writing and speaking practice.
+- Accurate progress analytics.
+- Reliable data persistence.
+- A polished mobile experience.
+- Secure backend architecture.
+- Fully tested core features.
+
+**Think of WordPath as a combination of a modern language-learning platform, a personalized AI tutor, and an elegant productivity dashboard.**
+
+Do not merely make the existing website look different.
+
+Transform it into a cohesive, intelligent, reliable, and genuinely useful learning product.
+
+## START NOW
+
+First inspect every relevant file in the existing repository.
+
+Then identify the confirmed issues, implement the improvements, redesign the interface, build the AI Mentor, expand the learning experience, test the application, and prepare the final deliverables.
+
+Your goal is not to produce a demonstration.
+
+**Your goal is to deliver WordPath 2.0.**

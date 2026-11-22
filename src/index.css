@@ -1,0 +1,59 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-display: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    scroll-behavior: smooth;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
+
+  :focus-visible {
+    outline: 2px solid #4f46e5;
+    outline-offset: 2px;
+  }
+
+  .dark :focus-visible {
+    outline-color: #38bdf8;
+  }
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Subtle WordPath canvas backdrop */
+.wp-canvas {
+  background-color: #f4f6fc;
+  background-image:
+    radial-gradient(circle at 12% 8%, rgba(99, 102, 241, 0.09) 0%, transparent 38%),
+    radial-gradient(circle at 88% 12%, rgba(14, 165, 233, 0.08) 0%, transparent 34%),
+    radial-gradient(circle at 75% 88%, rgba(20, 184, 166, 0.08) 0%, transparent 40%);
+}
+
+.dark .wp-canvas {
+  background-color: #0b1020;
+  background-image:
+    radial-gradient(circle at 12% 8%, rgba(99, 102, 241, 0.14) 0%, transparent 40%),
+    radial-gradient(circle at 88% 12%, rgba(14, 165, 233, 0.10) 0%, transparent 36%),
+    radial-gradient(circle at 75% 88%, rgba(20, 184, 166, 0.09) 0%, transparent 42%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

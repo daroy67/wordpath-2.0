@@ -65,7 +65,7 @@ WordPath 2.0 is a full-stack interactive English learning studio built for CEFR 
 The repository includes Vercel Serverless Functions in `api/` (`health.ts`, `ai-mentor.ts`, `writing-feedback.ts`) that handle `/api/health`, `/api/ai-mentor`, and `/api/writing-feedback` directly on Vercel.
 
 1. Set `GEMINI_API_KEY` (and optionally `GEMINI_MODEL`, e.g. `gemini-4-hydrogen`) in **Vercel Project Settings → Environment Variables**.
-2. Framework Preset: **Vite** (`npm run build`, output directory `dist`).
+2. Framework Preset: **Vite** (`npm run build`, output directory `dist`). Project-level `.npmrc` (`legacy-peer-deps=true`) and `vercel.json` configure Vercel to install dependencies with `--legacy-peer-deps` automatically.
 3. Redeploy after configuring environment variables so the serverless functions receive `GEMINI_API_KEY`.
 
 ---

@@ -60,13 +60,13 @@ WordPath 2.0 is a full-stack interactive English learning studio built for CEFR 
 
 ---
 
-## Deploying to Netlify
+## Deploying to Vercel
 
-The repository includes `netlify.toml` and serverless functions in `netlify/functions/` (`health.ts`, `ai-mentor.ts`, `writing-feedback.ts`) redirecting `/api/*` requests cleanly to Netlify Functions.
+The repository includes Vercel Serverless Functions in `api/` (`health.ts`, `ai-mentor.ts`, `writing-feedback.ts`) that handle `/api/health`, `/api/ai-mentor`, and `/api/writing-feedback` directly on Vercel.
 
-1. Set `GEMINI_API_KEY` (and optionally `GEMINI_MODEL`) in **Netlify Site Settings → Environment Variables**.
-2. Build command: `npm run build`
-3. Publish directory: `dist`
+1. Set `GEMINI_API_KEY` (and optionally `GEMINI_MODEL`, e.g. `gemini-4-hydrogen`) in **Vercel Project Settings → Environment Variables**.
+2. Framework Preset: **Vite** (`npm run build`, output directory `dist`).
+3. Redeploy after configuring environment variables so the serverless functions receive `GEMINI_API_KEY`.
 
 ---
 

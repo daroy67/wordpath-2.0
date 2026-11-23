@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { handler as mentorHandler } from '../netlify/functions/ai-mentor.ts';
-import { handler as healthHandler } from '../netlify/functions/health.ts';
-import { handler as feedbackHandler } from '../netlify/functions/writing-feedback.ts';
+import mentorHandler from '../api/ai-mentor.ts';
+import healthHandler from '../api/health.ts';
+import feedbackHandler from '../api/writing-feedback.ts';
 import {
   AIServiceError,
   activeAIProvider,
@@ -260,52 +260,163 @@ test('Server AI request validation rejects invalid inputs and handles missing AP
   }
 });
 
-test('Netlify functions handle health check, invalid JSON, method checks, and missing API key cleanly', async () => {
+function createMockRes() {
+  const headers: Record<string, string | number | readonly string[]> = {};
+  let statusCode = 200;
+  let rawBody = '';
+
+  const res = {
+    get statusCode() {
+      return statusCode;
+    },
+    set statusCode(code: number) {
+      statusCode = code;
+    },
+    headers,
+    setHeader(name: string, value: string | number | readonly string[]) {
+      headers[name.toLowerCase()] = value;
+      return res;
+    },
+    status(code: number) {
+      statusCode = code;
+      return res;
+    },
+    json(payload: unknown) {
+      rawBody = JSON.stringify(payload);
+      return res;
+    },
+    end(chunk?: unknown) {
+      if (typeof chunk === 'string') {
+        rawBody = chunk;
+      } else if (Buffer.isBuffer(chunk)) {
+        rawBody = chunk.toString('utf8');
+      }
+      return res;
+    },
+    getBody() {
+      return rawBody;
+    },
+    parseJson<T = Record<string, unknown>>() {
+      return JSON.parse(rawBody) as T;
+    }
+  };
+
+  return res;
+}
+
+test('Vercel API functions handle health check, invalid JSON, method checks, and missing API key cleanly', async () => {
   const prevKey = process.env.GEMINI_API_KEY;
   delete process.env.GEMINI_API_KEY;
   try {
-    const healthRes = await healthHandler({ httpMethod: 'GET' });
+    // /api/health GET & HEAD & method guard
+    const healthRes = createMockRes();
+    await healthHandler({ method: 'GET' }, healthRes);
     assert.equal(healthRes.statusCode, 200);
-    const healthBody = JSON.parse(healthRes.body) as { ok: boolean; aiConfigured: boolean; model: string };
+    assert.equal(healthRes.headers['cache-control'], 'no-store');
+    const healthBody = healthRes.parseJson<{ ok: boolean; aiConfigured: boolean; model: string }>();
     assert.equal(healthBody.ok, true);
     assert.equal(healthBody.aiConfigured, false);
     assert.ok(healthBody.model.length > 0);
 
-    const methodRes = await mentorHandler({ httpMethod: 'GET', body: null });
-    assert.equal(methodRes.statusCode, 405);
+    const healthHeadRes = createMockRes();
+    await healthHandler({ method: 'HEAD' }, healthHeadRes);
+    assert.equal(healthHeadRes.statusCode, 200);
 
-    const badJsonRes = await mentorHandler({ httpMethod: 'POST', body: '{invalid-json' });
+    const healthPostRes = createMockRes();
+    await healthHandler({ method: 'POST' }, healthPostRes);
+    assert.equal(healthPostRes.statusCode, 405);
+
+    // /api/ai-mentor OPTIONS & method guard
+    const mentorOptionsRes = createMockRes();
+    await mentorHandler({ method: 'OPTIONS' }, mentorOptionsRes);
+    assert.equal(mentorOptionsRes.statusCode, 204);
+
+    const mentorGetRes = createMockRes();
+    await mentorHandler({ method: 'GET' }, mentorGetRes);
+    assert.equal(mentorGetRes.statusCode, 405);
+    assert.equal(mentorGetRes.parseJson().errorCode, 'METHOD_NOT_ALLOWED');
+
+    // Invalid JSON string body
+    const badJsonRes = createMockRes();
+    await mentorHandler(
+      {
+        method: 'POST',
+        headers: { 'x-forwarded-for': '198.51.100.10' },
+        body: '{invalid-json'
+      },
+      badJsonRes
+    );
     assert.equal(badJsonRes.statusCode, 400);
-    assert.equal(JSON.parse(badJsonRes.body).errorCode, 'INVALID_JSON');
+    assert.equal(badJsonRes.parseJson().errorCode, 'INVALID_JSON');
 
-    const unconfiguredMentorRes = await mentorHandler({
-      httpMethod: 'POST',
-      body: JSON.stringify({
-        mode: 'grammar',
-        level: 'B1',
-        explanationLanguage: 'en',
-        messages: [{ role: 'user', content: 'Explain articles.' }]
-      })
-    });
+    // Vercel getter throwing on malformed JSON
+    const badGetterRes = createMockRes();
+    await mentorHandler(
+      {
+        method: 'POST',
+        headers: { 'x-forwarded-for': '198.51.100.11' },
+        get body() {
+          throw new SyntaxError('Unexpected token');
+        }
+      },
+      badGetterRes
+    );
+    assert.equal(badGetterRes.statusCode, 400);
+    assert.equal(badGetterRes.parseJson().errorCode, 'INVALID_JSON');
+
+    // Missing API key -> 503 AI_NOT_CONFIGURED on /api/ai-mentor (with parsed object body)
+    const unconfiguredMentorRes = createMockRes();
+    await mentorHandler(
+      {
+        method: 'POST',
+        headers: { 'x-forwarded-for': '198.51.100.12' },
+        body: {
+          mode: 'grammar',
+          level: 'B1',
+          explanationLanguage: 'en',
+          messages: [{ role: 'user', content: 'Explain articles.' }]
+        }
+      },
+      unconfiguredMentorRes
+    );
     assert.equal(unconfiguredMentorRes.statusCode, 503);
-    assert.equal(JSON.parse(unconfiguredMentorRes.body).errorCode, 'AI_NOT_CONFIGURED');
+    assert.equal(unconfiguredMentorRes.parseJson().errorCode, 'AI_NOT_CONFIGURED');
 
-    const unconfiguredFeedbackRes = await feedbackHandler({
-      httpMethod: 'POST',
-      body: JSON.stringify({
-        kind: 'writing',
-        taskType: 'Email',
-        promptTitle: 'Test',
-        level: 'B1',
-        explanationLanguage: 'en',
-        text: 'This is a sample English paragraph for testing validation.'
-      })
-    });
+    // /api/writing-feedback method guard & missing API key
+    const feedbackGetRes = createMockRes();
+    await feedbackHandler({ method: 'GET' }, feedbackGetRes);
+    assert.equal(feedbackGetRes.statusCode, 405);
+
+    const unconfiguredFeedbackRes = createMockRes();
+    await feedbackHandler(
+      {
+        method: 'POST',
+        headers: { 'x-forwarded-for': '198.51.100.13' },
+        body: JSON.stringify({
+          kind: 'writing',
+          taskType: 'Email',
+          promptTitle: 'Test',
+          level: 'B1',
+          explanationLanguage: 'en',
+          text: 'This is a sample English paragraph for testing validation.'
+        })
+      },
+      unconfiguredFeedbackRes
+    );
     assert.equal(unconfiguredFeedbackRes.statusCode, 503);
-    assert.equal(JSON.parse(unconfiguredFeedbackRes.body).errorCode, 'AI_NOT_CONFIGURED');
+    assert.equal(unconfiguredFeedbackRes.parseJson().errorCode, 'AI_NOT_CONFIGURED');
+
+    // Verify health reports aiConfigured: true when GEMINI_API_KEY is present
+    process.env.GEMINI_API_KEY = 'test-key-present';
+    const configuredHealthRes = createMockRes();
+    await healthHandler({ method: 'GET' }, configuredHealthRes);
+    assert.equal(configuredHealthRes.statusCode, 200);
+    assert.equal(configuredHealthRes.parseJson().aiConfigured, true);
   } finally {
     if (prevKey !== undefined) {
       process.env.GEMINI_API_KEY = prevKey;
+    } else {
+      delete process.env.GEMINI_API_KEY;
     }
   }
 });
